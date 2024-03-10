@@ -42,7 +42,7 @@ async def get_report(
     # Вызов функций
     spreadsheetid = await spreadsheets_create(wrapper_services)
     await set_user_permissions(spreadsheetid, wrapper_services)
-    await spreadsheets_update_value(spreadsheetid,
-                                    end_projects_list,
-                                    wrapper_services)
+    await spreadsheets_update_value(
+        spreadsheetid, end_projects_list, wrapper_services
+    )
     return end_projects_list

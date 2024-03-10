@@ -8,10 +8,10 @@ from sqlalchemy import pool
 from sqlalchemy.ext.asyncio import AsyncEngine
 
 from alembic import context
-
 from app.core.db import Base
+from app.models import CharityProject, Donation, User # noqa
 
-from app.models import Donation, CharityProject, User
+load_dotenv('.env')
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

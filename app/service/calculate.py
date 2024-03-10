@@ -96,9 +96,10 @@ async def calculate_create_donation(
         # к следующему проекту.
         # - Если сумма до закрытия проекта меньше доната, то делаем
         # выплату и обозначаем донат закрытым.
-        if sum_to_end_project <= donation_sum:
+        if sum_to_end_project < donation_sum:
             donation_sum -= sum_to_end_project
             invested_amount += sum_to_end_project
+            obj_in_data['invested_amount'] = invested_amount
             new_update_data = {
                 'fully_invested': True,
                 'invested_amount': get_active_project.full_amount,
@@ -118,6 +119,10 @@ async def calculate_create_donation(
             'invested_amount': (get_active_project.invested_amount +
                                 donation_sum)
         }
+        if (get_active_project.invested_amount + donation_sum
+                == get_active_project.full_amount):
+            new_update_data['fully_invested'] = True
+
         await charityproject_crud.update(
             db_obj=get_active_project,
             obj_in=new_update_data,

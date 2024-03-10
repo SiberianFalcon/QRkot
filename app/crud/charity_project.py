@@ -40,6 +40,7 @@ class CRUDCharityProject(CRUDBase):
         scalars_objects = get_objects.scalars().first()
 
         print('fffff')
+        return get_objects
 
 
 charityproject_crud = CRUDCharityProject(CharityProject)
