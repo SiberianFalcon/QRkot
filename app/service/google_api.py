@@ -64,10 +64,11 @@ async def spreadsheets_update_value(
         'majorDimension': 'ROWS',
         'values': table_values
     }
+
     await wrapper_services.as_service_account(
         service.spreadsheets.values.update(
             spreadsheetId=spreadsheetid,
-            range='A1:E30',
+            range=f'A1:E{len(projects) + len(table_values)}',
             valueInputOption='USER_ENTERED',
             json=update_body
         )

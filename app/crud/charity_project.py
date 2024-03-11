@@ -1,7 +1,7 @@
 from typing import Union
 
 from fastapi.encoders import jsonable_encoder
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.crud.base import CRUDBase, ModelType, UpdateSchemaType
@@ -36,10 +36,12 @@ class CRUDCharityProject(CRUDBase):
     ):
         projects = await db_session.execute(
             select(CharityProject).where(
-                CharityProject.fully_invested.is_(True))
+                CharityProject.fully_invested).order_by(
+                func.julianday(CharityProject.close_date) -
+                func.julianday(CharityProject.create_date)
+            )
         )
         projects = projects.scalars().all()
-        projects.sort(key=lambda x: x.close_date - x.create_date)
 
         return projects
 
