@@ -1,21 +1,14 @@
-# app/services/google_api.py
-
 from datetime import datetime
 
 from aiogoogle import Aiogoogle
-# В секретах лежит адрес вашего личного гугл-аккаунта
 from app.core.config import settings
 
-# Константа с форматом строкового представления времени
 FORMAT = "%Y/%m/%d %H:%M:%S"
 
 
 async def spreadsheets_create(wrapper_services: Aiogoogle) -> str:
-    # Получаем текущую дату для заголовка документа
     now_date_time = datetime.now().strftime(FORMAT)
-    # Создаём экземпляр класса Resource
     service = await wrapper_services.discover('sheets', 'v4')
-    # Формируем тело запроса
     spreadsheet_body = {
         'properties': {'title': f'Отчёт на {now_date_time}',
                        'locale': 'ru_RU'},
@@ -23,15 +16,14 @@ async def spreadsheets_create(wrapper_services: Aiogoogle) -> str:
                                    'sheetId': 0,
                                    'title': 'Лист1',
                                    'gridProperties': {'rowCount': 100,
-                                                      'columnCount': 11}}}]
+                                                      'columnCount': 10}}}]
     }
-    # Выполняем запрос
     response = await wrapper_services.as_service_account(
         service.spreadsheets.create(json=spreadsheet_body)
     )
     spreadsheetid = response['spreadsheetId']
-    print('https://docs.google.com/spreadsheets/d/' + spreadsheetid)
     return spreadsheetid
+
 
 async def set_user_permissions(
         spreadsheetid: str,
@@ -48,6 +40,7 @@ async def set_user_permissions(
             fields="id"
         ))
 
+
 async def spreadsheets_update_value(
         spreadsheetid: str,
         projects: list,
@@ -55,22 +48,23 @@ async def spreadsheets_update_value(
 ) -> None:
     now_date_time = datetime.now().strftime(FORMAT)
     service = await wrapper_services.discover('sheets', 'v4')
-    # Здесь формируется тело таблицы
     table_values = [
         ['Отчёт от', now_date_time],
-        ['Количество регистраций переговорок'],
-        ['ID переговорки', 'Кол-во бронирований']
+        ['Топ проектов по скорости закрытия'],
+        ['Название проекта', 'Время сбора', 'Описание']
     ]
-    # Здесь в таблицу добавляются строчки
-    for res in projects:
-        new_row = [str(res['name']), str(res['fully_invested'])]
+    for project in projects:
+        name = project.name
+        duration = str(project.close_date - project.create_date)
+        description = project.description
+        new_row = [name, duration, description]
         table_values.append(new_row)
 
     update_body = {
         'majorDimension': 'ROWS',
         'values': table_values
     }
-    response = await wrapper_services.as_service_account(
+    await wrapper_services.as_service_account(
         service.spreadsheets.values.update(
             spreadsheetId=spreadsheetid,
             range='A1:E30',

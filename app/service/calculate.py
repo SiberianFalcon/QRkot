@@ -119,9 +119,10 @@ async def calculate_create_donation(
             'invested_amount': (get_active_project.invested_amount +
                                 donation_sum)
         }
-        if (get_active_project.invested_amount + donation_sum
-                == get_active_project.full_amount):
+        if (get_active_project.invested_amount + donation_sum ==
+                get_active_project.full_amount):
             new_update_data['fully_invested'] = True
+            new_update_data['close_date'] = real_time
 
         await charityproject_crud.update(
             db_obj=get_active_project,

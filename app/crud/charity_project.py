@@ -1,7 +1,7 @@
 from typing import Union
 
 from fastapi.encoders import jsonable_encoder
-from sqlalchemy import extract, select
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.crud.base import CRUDBase, ModelType, UpdateSchemaType
@@ -34,13 +34,14 @@ class CRUDCharityProject(CRUDBase):
         self,
         db_session
     ):
-        get_objects = await db_session.execute(select(
-            CharityProject.fully_invested.is_(True)))
+        projects = await db_session.execute(
+            select(CharityProject).where(
+                CharityProject.fully_invested.is_(True))
+        )
+        projects = projects.scalars().all()
+        projects.sort(key=lambda x: x.close_date - x.create_date)
 
-        scalars_objects = get_objects.scalars().first()
-
-        print('fffff')
-        return get_objects
+        return projects
 
 
 charityproject_crud = CRUDCharityProject(CharityProject)
