@@ -12,9 +12,7 @@ async def calculate_create_project(
     db_session
 ) -> dict:
     real_time = datetime.now()
-    project_update_data = {
-        'create_date': real_time
-    }
+    project_update_data = {}
     donat_update_data = {}
     donat_money = 0
     # Если в кубышке что-то есть, то заполняем проект
