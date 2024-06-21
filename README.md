@@ -1,4 +1,5 @@
-![Static Badge](https://img.shields.io/badge/Python-gray) ![Static Badge](https://img.shields.io/badge/FastAPI-orange)
+![Static Badge](https://img.shields.io/badge/Python-gray) ![Static Badge](https://img.shields.io/badge/FastAPI-orange) ![Static Badge](https://img.shields.io/badge/SQLAlchemy-navy)
+
 
 # БЛАГОТВОРИТЕЛЬНАЯ ПЛАТФОРМА - QRKot
 
